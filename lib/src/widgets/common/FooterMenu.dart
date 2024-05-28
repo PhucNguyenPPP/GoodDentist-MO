@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-class AdminFooterMenu extends StatefulWidget {
-  const AdminFooterMenu({super.key});
+class FooterMenu extends StatefulWidget {
+  const FooterMenu({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return _AdminFooterMenuState();
+    return _FooterMenuState();
   }
+
 }
 
-class _AdminFooterMenuState extends State<AdminFooterMenu> {
+class _FooterMenuState  extends State<FooterMenu > {
   int _selectedIndex = 0;
 
   // static final List<Widget> _widgetOptions = <Widget>[
@@ -37,35 +37,23 @@ class _AdminFooterMenuState extends State<AdminFooterMenu> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(IconData(0xf47d, fontFamily: 'ClinicIcon')),
-            label: 'Clinic',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(IconData(0xf0f0, fontFamily: 'DentistIcon')),
-            label: 'Dentist',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(IconData(0xf82f, fontFamily: 'StaffIcon')),
-            label: 'Staff',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.account_circle_outlined),
-            label: 'Customer',
+            label: 'My Customer',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
             label: 'Appointment',
           ),
           BottomNavigationBarItem(
-            icon: Icon(IconData(0xe800, fontFamily: 'ProfileIcon')),
-            label: 'Profile',
+            icon: Icon(IconData(0xf271, fontFamily: 'SlotIcon',)),
+            label: 'Slot',
           ),
-
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.deepPurple[400],
+        selectedItemColor: Colors.deepPurple[500],
         unselectedItemColor: Colors.black,
         showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,
       ),
     );

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_dentist_mobile/screens/admin/home/AdminHomeScreen.dart';
-import 'package:good_dentist_mobile/screens/dentist/home/DentistHomeScreen.dart';
-import 'package:good_dentist_mobile/screens/staff/home/StaffHomeScreen.dart';
+import 'package:good_dentist_mobile/src/screens/HomeScreen.dart';
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -12,7 +10,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const DentistHomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
