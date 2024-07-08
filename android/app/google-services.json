@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "50872987365",
+    "project_id": "gooddentistmobile",
+    "storage_bucket": "gooddentistmobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50872987365:android:8ea53d9b57d1f3a9b7ae0c",
+        "android_client_info": {
+          "package_name": "com.example.good_dentist_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn2-HOzXwCQgpr4peNh33K7jv3Ct3GNd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
