@@ -3,6 +3,7 @@ import 'package:good_dentist_mobile/src/api/Auth/AuthService.dart';
 import 'package:good_dentist_mobile/src/models/LoginResponseDTO.dart';
 import 'package:good_dentist_mobile/src/screens/layout/MainLayout.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key});
@@ -37,8 +38,6 @@ class LoginWidgetState extends State<LoginWidget> {
 
     try {
       LoginResponseDTO response = await AuthService.login(username, password);
-      if (!mounted) return;
-
       if (response.isSuccess) {
         // Giải mã JWT
         final jwt = JWT.decode(response.accessToken!);
@@ -47,7 +46,18 @@ class LoginWidgetState extends State<LoginWidget> {
         // Lấy role từ claim
         final role = payload[
             'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-        if (role == 'Dentist') {
+        // Lấy dentistId từ claim
+        final dentistId = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+
+        if (role == "Dentist") {
+          //Set dentistId, role, expired time len SharedPreferences
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          final expiration = DateTime.now().add(const Duration(hours: 24)).millisecondsSinceEpoch;
+
+          await prefs.setString('dentistId', dentistId);
+          await prefs.setInt('expiration', expiration);
+          await prefs.setString('role', role);
+
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const MainLayoutScreen()),
@@ -64,13 +74,11 @@ class LoginWidgetState extends State<LoginWidget> {
         });
       }
     } catch (e) {
-      if (!mounted) return;
       setState(() {
         _errorMessage = "$e";
       });
     }
 
-    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });

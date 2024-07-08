@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:good_dentist_mobile/src/api/customer/ApiPostService.dart';
 import 'package:good_dentist_mobile/src/models/PostDTO.dart';
 import 'package:good_dentist_mobile/src/screens/layout/CustomerDetailLayout.dart';
 
