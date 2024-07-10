@@ -1,6 +1,6 @@
 import 'package:good_dentist_mobile/src/models/ClinicDTO.dart';
 
-class DentistDTO {
+class UserDTO {
   final String userId;
   final String userName;
   final String name;
@@ -12,10 +12,10 @@ class DentistDTO {
   final String address;
   final bool status;
   final int roleId;
-  final String avatar;
-  final List<ClinicDTO> clinics;
+  final String? avatar;
+  final List<ClinicDTO>? clinics;
 
-  DentistDTO({
+  UserDTO({
     required this.userId,
     required this.userName,
     required this.name,
@@ -31,8 +31,9 @@ class DentistDTO {
     required this.clinics,
   });
 
-  factory DentistDTO.fromJson(Map<String, dynamic> json) {
-    return DentistDTO(
+  factory UserDTO.fromJson(Map<String, dynamic> json) {
+    var clinicsList = json['clinics'] as List<dynamic>?;
+    return UserDTO(
       userId: json['userId'],
       userName: json['userName'],
       name: json['name'],
@@ -45,9 +46,11 @@ class DentistDTO {
       status: json['status'],
       roleId: json['roleId'],
       avatar: json['avatar'],
-      clinics: (json['clinics'] as List<dynamic>)
+      clinics: clinicsList != null
+          ? clinicsList
           .map((clinic) => ClinicDTO.fromJson(clinic as Map<String, dynamic>))
-          .toList(),
+          .toList()
+          : [],
     );
   }
 }
