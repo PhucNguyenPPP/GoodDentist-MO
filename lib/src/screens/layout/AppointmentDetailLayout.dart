@@ -5,6 +5,10 @@ import 'package:good_dentist_mobile/src/models/ApiResponseDTO.dart';
 import 'package:good_dentist_mobile/src/models/ExaminationDetailDTO.dart';
 import 'package:good_dentist_mobile/src/screens/appointment/AppointmentDetailScreen.dart';
 import 'package:good_dentist_mobile/src/screens/common/LoginScreen.dart';
+import 'package:good_dentist_mobile/src/screens/examination_profile/ExaminationProfileDetailScreen.dart';
+import 'package:good_dentist_mobile/src/screens/medical_record/MedicalRecordScreen.dart';
+import 'package:good_dentist_mobile/src/screens/order/OrderScreen.dart';
+import 'package:good_dentist_mobile/src/screens/prescription/PrescriptionScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppointmentDetailLayout extends StatefulWidget {
@@ -28,7 +32,7 @@ class AppointmentDetailLayoutState extends State<AppointmentDetailLayout>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _fetchExamDetail();
   }
 
@@ -74,19 +78,22 @@ class AppointmentDetailLayoutState extends State<AppointmentDetailLayout>
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _widgetOptions = <Widget>[
+    final List<Widget> widgetOptions = <Widget>[
       _isLoading || _examDetail == null
           ? const CircularProgressIndicator()
           : AppointmentDetailScreen(examDetail: _examDetail),
-      const Center(child: Text('Examination')),
+      ExaminationProfileDetailScreen(examDetail: _examDetail),
+      OrderScreen(examDetail: _examDetail),
+      PrescriptionScreen(examDetail: _examDetail),
+      MedicalRecordScreen(examDetail: _examDetail),
     ];
 
     return DefaultTabController(
-      length: 2,
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[400],
-          title: const Text('Nguyen Van A'),
+          title: Text(_examDetail?.result?.customerName ?? 'Loading...'),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
             child: Container(
@@ -97,7 +104,10 @@ class AppointmentDetailLayoutState extends State<AppointmentDetailLayout>
                 tabAlignment: TabAlignment.center,
                 tabs: const <Widget>[
                   Tab(text: 'Information'),
-                  Tab(text: 'Examination'),
+                  Tab(text: 'Examination Profile'),
+                  Tab(text: 'Order'),
+                  Tab(text: 'Prescription'),
+                  Tab(text: 'Medical Record'),
                 ],
                 unselectedLabelColor: Colors.black,
                 labelColor: Colors.deepPurple[500],
@@ -118,7 +128,7 @@ class AppointmentDetailLayoutState extends State<AppointmentDetailLayout>
               : _examDetail != null && _examDetail!.result != null
               ? TabBarView(
             controller: _tabController,
-            children: _widgetOptions,
+            children: widgetOptions,
           )
               : const Center(
               child: Text('No examination information found')),

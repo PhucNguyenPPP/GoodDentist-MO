@@ -108,8 +108,8 @@ class _ProfileInformationScreenState extends State<ProfileInformationScreen> {
                     imageUrl: _dentistInfo?.result?.avatar ?? '',
                     height: constraints.maxHeight * 0.08,
                     placeholder: (context, url) => const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Image.network(
-                      'https://th.bing.com/th/id/OIP.2AhD70xJ9FbrlEIpX_jrxgHaHa?rs=1&pid=ImgDetMain',
+                    errorWidget: (context, url, error) => Image.asset(
+                      'assets/images/AvaDefault.jfif',
                       height: constraints.maxHeight * 0.08,
                     ),
                   ),

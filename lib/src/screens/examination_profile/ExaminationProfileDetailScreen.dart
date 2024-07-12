@@ -6,17 +6,17 @@ import 'package:good_dentist_mobile/src/screens/customer/CustomerDetailScreen.da
 import 'package:good_dentist_mobile/src/screens/layout/CustomerDetailLayout.dart';
 import 'package:intl/intl.dart';
 
-class AppointmentDetailScreen extends StatefulWidget {
+class ExaminationProfileDetailScreen extends StatefulWidget {
   final ApiResponseDTO<ExaminationDetailDTO>? examDetail;
-  const AppointmentDetailScreen({super.key, required this.examDetail});
+  const ExaminationProfileDetailScreen({super.key, required this.examDetail});
 
   @override
   State<StatefulWidget> createState() {
-    return AppointmentDetailScreenState();
+    return ExaminationProfileDetailScreenState();
   }
 }
 
-class AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
+class ExaminationProfileDetailScreenState extends State<ExaminationProfileDetailScreen> {
   @override
   Widget build(BuildContext context) {
     if (widget.examDetail == null || widget.examDetail!.result == null) {
@@ -64,10 +64,10 @@ class AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                    CustomerDetailLayout(
-                                      customerId: widget.examDetail!.result!.customerId,
-                                      customerName: widget.examDetail!.result!.customerName,
-                                    )),
+                                        CustomerDetailLayout(
+                                          customerId: widget.examDetail!.result!.customerId,
+                                          customerName: widget.examDetail!.result!.customerName,
+                                        )),
                               );
                             },
                             child: const Icon(Icons.portrait_outlined)))
@@ -111,15 +111,9 @@ class AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                     SizedBox(
                         width: constraints.maxWidth * 0.5,
                         child: Text(
-                          widget.examDetail!.result!.status == 1
-                              ? "Completed"
-                              : widget.examDetail!.result!.status == 2
-                              ? "Canceled"
-                              : widget.examDetail!.result!.status == 3
-                              ? "Not yet"
-                              : widget.examDetail!.result!.status == 4
-                              ? "Overdue"
-                              : "Unknown",
+                          widget.examDetail!.result!.examinationProfile.status
+                              ? "Active"
+                              : "Inactive",
                           style: const TextStyle(fontSize: 18),
                         )),
                   ],
@@ -140,28 +134,7 @@ class AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                     SizedBox(
                         width: constraints.maxWidth * 0.5,
                         child: Text(
-                          widget.examDetail!.result!.dentistSlot.dentist.name,
-                          style: const TextStyle(fontSize: 18),
-                        )),
-                  ],
-                ),
-                SizedBox(height: constraints.maxHeight * 0.02),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(width: constraints.maxWidth * 0.05),
-                    SizedBox(
-                        width: constraints.maxWidth * 0.3,
-                        child: const Text(
-                          "Room:",
-                          style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        )),
-                    SizedBox(width: constraints.maxWidth * 0.1),
-                    SizedBox(
-                        width: constraints.maxWidth * 0.5,
-                        child: Text(
-                          widget.examDetail!.result!.dentistSlot.room.roomNumber,
+                          widget.examDetail!.result!.examinationProfile.dentist.name,
                           style: const TextStyle(fontSize: 18),
                         )),
                   ],
@@ -182,7 +155,7 @@ class AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                     SizedBox(
                         width: constraints.maxWidth * 0.5,
                         child: Text(
-                          widget.examDetail!.result!.diagnosis,
+                          widget.examDetail!.result!.examinationProfile.diagnosis,
                           style: const TextStyle(fontSize: 18),
                         )),
                   ],
@@ -195,7 +168,7 @@ class AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                     SizedBox(
                         width: constraints.maxWidth * 0.3,
                         child: const Text(
-                          "Time:",
+                          "Created Date:",
                           style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         )),
@@ -209,7 +182,7 @@ class AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                               borderRadius: BorderRadius.circular(15),
                               color: Colors.grey,
                             ),
-                            width: constraints.maxWidth * 0.4,
+                            width: constraints.maxWidth * 0.37,
                             child: Row(
                               children: [
                                 Text(
@@ -221,73 +194,8 @@ class AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                                 const Icon(Icons.calendar_month)
                               ],
                             )),
-                        SizedBox(
-                          height: constraints.maxHeight * 0.03,
-                        ),
-                        Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.grey,
-                            ),
-                            width: constraints.maxWidth * 0.4,
-                            child: Row(
-                              children: [
-                                Text(
-                                  '${DateFormat('HH:mm').format((DateTime.parse(
-                                      widget.examDetail!.result!.timeStart.toString())))} - '
-                                      '${DateFormat('HH:mm').format((DateTime.parse(
-                                      widget.examDetail!.result!.timeEnd.toString())))}',
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                                SizedBox(width: constraints.maxWidth * 0.02),
-                                const Icon(Icons.watch_later_outlined)
-                              ],
-                            ))
                       ],
                     ),
-                  ],
-                ),
-                SizedBox(height: constraints.maxHeight * 0.02),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(width: constraints.maxWidth * 0.05),
-                    SizedBox(
-                        width: constraints.maxWidth * 0.3,
-                        child: const Text(
-                          "Duration:",
-                          style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        )),
-                    SizedBox(width: constraints.maxWidth * 0.1),
-                    SizedBox(
-                        width: constraints.maxWidth * 0.5,
-                        child: Text(
-                          "$durationInMinutes minutes",
-                          style: const TextStyle(fontSize: 18),
-                        )),
-                  ],
-                ),
-                SizedBox(height: constraints.maxHeight * 0.02),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(width: constraints.maxWidth * 0.05),
-                    SizedBox(
-                        width: constraints.maxWidth * 0.3,
-                        child: const Text(
-                          "Note",
-                          style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        )),
-                    SizedBox(width: constraints.maxWidth * 0.1),
-                    SizedBox(
-                        width: constraints.maxWidth * 0.5,
-                        child: Text(
-                          widget.examDetail!.result!.notes,
-                          style: const TextStyle(fontSize: 18),
-                        )),
                   ],
                 ),
                 SizedBox(height: constraints.maxHeight * 0.02),
