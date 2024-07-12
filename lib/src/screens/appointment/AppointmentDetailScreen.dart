@@ -19,7 +19,6 @@ class AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
       child: LayoutBuilder(builder: (context, constraints) {
         return Column(
           children: [
-
             SizedBox(height: constraints.maxHeight * 0.02),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +45,7 @@ class AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                const CustomerDetailLayout()),
+                                const CustomerDetailLayout(customerId: "aa", customerName: "aa",)),
                           );
                         },
                         child: const Icon(Icons.portrait_outlined)
