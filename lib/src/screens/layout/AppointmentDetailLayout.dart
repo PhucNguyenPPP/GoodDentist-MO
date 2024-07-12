@@ -1,25 +1,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:good_dentist_mobile/src/api/examination/ExaminationService.dart';
+import 'package:good_dentist_mobile/src/models/ApiResponseDTO.dart';
+import 'package:good_dentist_mobile/src/models/ExaminationDetailDTO.dart';
 import 'package:good_dentist_mobile/src/screens/appointment/AppointmentDetailScreen.dart';
-import 'package:good_dentist_mobile/src/screens/customer/CustomerDetailScreen.dart';
+import 'package:good_dentist_mobile/src/screens/common/LoginScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class AppointmentDetailLayout extends StatefulWidget{
-  const AppointmentDetailLayout({super.key});
+class AppointmentDetailLayout extends StatefulWidget {
+  final int examinationId;
+  const AppointmentDetailLayout({super.key, required this.examinationId});
 
   @override
   State<StatefulWidget> createState() {
-   return AppointmentDetailLayoutState();
+    return AppointmentDetailLayoutState();
   }
-
 }
 
-class AppointmentDetailLayoutState extends State<AppointmentDetailLayout> with SingleTickerProviderStateMixin {
+class AppointmentDetailLayoutState extends State<AppointmentDetailLayout>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _isLoading = true;
+  String? _errorMessage;
+  ApiResponseDTO<ExaminationDetailDTO>? _examDetail;
+  String? role;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _fetchExamDetail();
   }
 
   @override
@@ -28,13 +38,49 @@ class AppointmentDetailLayoutState extends State<AppointmentDetailLayout> with S
     super.dispose();
   }
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    AppointmentDetailScreen(),
-    Center(child: Text('Examination')),
-  ];
+  Future<void> _fetchExamDetail() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? dentistId = prefs.getString('dentistId');
+      int? expiration = prefs.getInt('expiration');
+      role = prefs.getString('role');
+
+      if (dentistId != null && expiration != null && role != null) {
+        if (DateTime.now().millisecondsSinceEpoch > expiration) {
+          // If expired, navigate to login page
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+                (Route<dynamic> route) => false,
+          );
+        } else {
+          ApiResponseDTO<ExaminationDetailDTO> examDetail =
+          await ExaminationService.getExaminationDetail(
+              widget.examinationId);
+          setState(() {
+            _examDetail = examDetail;
+          });
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = "$e";
+      });
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _widgetOptions = <Widget>[
+      _isLoading || _examDetail == null
+          ? const CircularProgressIndicator()
+          : AppointmentDetailScreen(examDetail: _examDetail),
+      const Center(child: Text('Examination')),
+    ];
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -60,9 +106,22 @@ class AppointmentDetailLayoutState extends State<AppointmentDetailLayout> with S
             ),
           ),
         ),
-        body: TabBarView(
-          controller: _tabController,
-          children: _widgetOptions,
+        body: Center(
+          child: _isLoading
+              ? const CircularProgressIndicator()
+              : _errorMessage != null
+              ? Text(
+            _errorMessage!,
+            style: const TextStyle(color: Colors.red),
+            textAlign: TextAlign.center,
+          )
+              : _examDetail != null && _examDetail!.result != null
+              ? TabBarView(
+            controller: _tabController,
+            children: _widgetOptions,
+          )
+              : const Center(
+              child: Text('No examination information found')),
         ),
       ),
     );
