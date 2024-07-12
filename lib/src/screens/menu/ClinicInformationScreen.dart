@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_dentist_mobile/src/api/dentist/DentistService.dart';
 import 'package:good_dentist_mobile/src/models/ApiResponseDTO.dart';
-import 'package:good_dentist_mobile/src/models/DentistDTO.dart';
+import 'package:good_dentist_mobile/src/models/UserDTO.dart';
 import 'package:good_dentist_mobile/src/screens/common/LoginScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,7 +17,7 @@ class ClinicInformationScreen extends StatefulWidget {
 class _ClinicInformationScreenState extends State<ClinicInformationScreen> {
   bool _isLoading = true;
   String? _errorMessage;
-  ApiResponseDTO<DentistDTO>? _dentistInfo;
+  ApiResponseDTO<UserDTO>? _dentistInfo;
   String? role;
 
   @override
@@ -44,7 +44,7 @@ class _ClinicInformationScreenState extends State<ClinicInformationScreen> {
         }
       }
 
-      ApiResponseDTO<DentistDTO> dentistInfo =
+      ApiResponseDTO<UserDTO> dentistInfo =
       await DentistService.getDentistInformation(dentistId!);
       setState(() {
         _dentistInfo = dentistInfo;
@@ -102,7 +102,7 @@ class _ClinicInformationScreenState extends State<ClinicInformationScreen> {
               SizedBox(
                   width: constraints.maxWidth * 0.5,
                   child: Text(
-                    _dentistInfo!.result.clinics[0].clinicName,
+                    _dentistInfo!.result!.clinics![0].clinicName,
                     style: const TextStyle(fontSize: 18),
                   )),
             ],
@@ -122,7 +122,7 @@ class _ClinicInformationScreenState extends State<ClinicInformationScreen> {
               SizedBox(
                   width: constraints.maxWidth * 0.5,
                   child: Text(
-                    _dentistInfo!.result.clinics[0].address,
+                    _dentistInfo!.result!.clinics![0].address,
                     style: const TextStyle(fontSize: 18),
                   )),
             ],
@@ -142,7 +142,7 @@ class _ClinicInformationScreenState extends State<ClinicInformationScreen> {
               SizedBox(
                   width: constraints.maxWidth * 0.5,
                   child: Text(
-                    _dentistInfo!.result.clinics[0].phoneNumber,
+                    _dentistInfo!.result!.clinics![0].phoneNumber,
                     style: const TextStyle(fontSize: 18),
                   )),
             ],

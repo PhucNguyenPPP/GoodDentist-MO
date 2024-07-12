@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_dentist_mobile/src/screens/customer/CustomerDetailScreen.dart';
+import 'package:good_dentist_mobile/src/screens/examination_profile/ExaminationProfileScreen.dart';
 
 class CustomerDetailLayout extends StatefulWidget {
-  const CustomerDetailLayout({super.key});
+  final String customerId;
+  final String customerName;
+
+  const CustomerDetailLayout({super.key, required this.customerId, required this.customerName});
 
   @override
   State<StatefulWidget> createState() {
@@ -11,7 +15,8 @@ class CustomerDetailLayout extends StatefulWidget {
   }
 }
 
-class _CustomerDetailLayoutState extends State<CustomerDetailLayout> with SingleTickerProviderStateMixin {
+class _CustomerDetailLayoutState extends State<CustomerDetailLayout>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -26,11 +31,6 @@ class _CustomerDetailLayoutState extends State<CustomerDetailLayout> with Single
     super.dispose();
   }
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    CustomerDetailScreen(),
-    Center(child: Text('Examination profile')),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -38,7 +38,7 @@ class _CustomerDetailLayoutState extends State<CustomerDetailLayout> with Single
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[400],
-          title: const Text('Nguyen Van A'),
+          title: Text(widget.customerName),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
             child: Container(
@@ -60,7 +60,10 @@ class _CustomerDetailLayoutState extends State<CustomerDetailLayout> with Single
         ),
         body: TabBarView(
           controller: _tabController,
-          children: _widgetOptions,
+          children: [
+            CustomerDetailScreen(customerId: widget.customerId),
+            ExaminationProfileScreen(customerId: widget.customerId),
+          ],
         ),
       ),
     );
