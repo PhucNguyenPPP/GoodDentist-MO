@@ -2,38 +2,35 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_dentist_mobile/src/api/dentist/DentistService.dart';
 import 'package:good_dentist_mobile/src/api/examination/ExaminationService.dart';
-import 'package:good_dentist_mobile/src/api/examination_profile/ExaminationProfileService.dart';
 import 'package:good_dentist_mobile/src/models/ApiResponseDTO.dart';
 import 'package:good_dentist_mobile/src/models/ExaminationDTO.dart';
-import 'package:good_dentist_mobile/src/models/ExaminationProfileDTO.dart';
 import 'package:good_dentist_mobile/src/models/UserDTO.dart';
 import 'package:good_dentist_mobile/src/screens/common/LoginScreen.dart';
-import 'package:good_dentist_mobile/src/screens/examination_profile/ExaminationScreen.dart';
 import 'package:good_dentist_mobile/src/screens/layout/AppointmentDetailLayout.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ExaminationProfileScreen extends StatefulWidget {
-  final String customerId;
-  const ExaminationProfileScreen({super.key, required this.customerId});
+class ExaminationScreen extends StatefulWidget {
+  final int examProfileId;
+  const ExaminationScreen({super.key, required this.examProfileId});
 
   @override
-  State<StatefulWidget> createState() => _ExaminationProfileScreenState();
+  State<StatefulWidget> createState() => _ExaminationScreenState();
 }
 
-class _ExaminationProfileScreenState extends State<ExaminationProfileScreen> {
+class _ExaminationScreenState extends State<ExaminationScreen> {
   bool _isLoading = true;
   String? _errorMessage;
-  ApiResponseDTO<List<ExaminationProfileDTO>>? _examinationProfileList;
+  ApiResponseDTO<List<ExaminationDTO>>? _examinationList;
   String? role;
 
   @override
   void initState() {
     super.initState();
-    _fetchExaminationProfileList();
+    _fetchExaminationList();
   }
 
-  Future<void> _fetchExaminationProfileList() async {
+  Future<void> _fetchExaminationList() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? dentistId = prefs.getString('dentistId');
@@ -49,11 +46,11 @@ class _ExaminationProfileScreenState extends State<ExaminationProfileScreen> {
             (Route<dynamic> route) => false,
           );
         } else {
-          ApiResponseDTO<List<ExaminationProfileDTO>>? examinationProfileList =
-              await ExaminationProfileService.getExaminationProfileByCustomerId(
-                  widget.customerId);
+          ApiResponseDTO<List<ExaminationDTO>> examinationList =
+              await ExaminationService.getExaminationListByExaminationProfileId(
+                  widget.examProfileId);
           setState(() {
-            _examinationProfileList = examinationProfileList;
+            _examinationList = examinationList;
           });
         }
       }
@@ -70,6 +67,10 @@ class _ExaminationProfileScreenState extends State<ExaminationProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Examination List"),
+        backgroundColor: Colors.purple[400],
+      ),
       body: Center(
         child: _isLoading
             ? const CircularProgressIndicator()
@@ -79,16 +80,16 @@ class _ExaminationProfileScreenState extends State<ExaminationProfileScreen> {
                     style: const TextStyle(color: Colors.red),
                     textAlign: TextAlign.center,
                   )
-                : _examinationProfileList != null &&
-                        _examinationProfileList!.result != null &&
-                        _examinationProfileList!.result!.isNotEmpty
-                    ? _buildExaminationProfileList(context)
+                : _examinationList != null &&
+                        _examinationList!.result != null &&
+                        _examinationList!.result!.isNotEmpty
+                    ? _buildExaminationList(context)
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(height: 20),
                           Image.asset(
-                            'assets/images/NoData.jpg',
+                            'assets/images/NoData.jpg', // Replace with your image path
                             width: 200,
                             height: 200,
                             fit: BoxFit.contain,
@@ -99,27 +100,26 @@ class _ExaminationProfileScreenState extends State<ExaminationProfileScreen> {
     );
   }
 
-  Widget _buildExaminationProfileList(BuildContext context) {
+  Widget _buildExaminationList(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return ListView.builder(
-          itemCount: _examinationProfileList!.result!.length,
+          itemCount: _examinationList!.result!.length,
           itemBuilder: (context, index) {
-            ExaminationProfileDTO examinationProfile =
-                _examinationProfileList!.result![index];
+            ExaminationDTO examination = _examinationList!.result![index];
             return InkWell(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ExaminationScreen(
-                          examProfileId:
-                              examinationProfile.examinationProfileId)),
+                      builder: (context) => AppointmentDetailLayout(
+                            examinationId: examination.examinationId,
+                          )),
                 );
               },
               child: Container(
                 margin: const EdgeInsets.only(right: 15, left: 15),
-                height: 120,
+                height: 150,
                 decoration: const BoxDecoration(
                     border: Border(
                         bottom: BorderSide(width: 0.8, color: Colors.grey))),
@@ -132,20 +132,25 @@ class _ExaminationProfileScreenState extends State<ExaminationProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            examinationProfile.customer.name ?? "No Name",
+                            examination.customerName ?? "No Name",
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            DateFormat('yyyy-MM-dd  |  HH:mm').format(
-                                (DateTime.parse(
-                                    examinationProfile.date.toString()))),
+                            DateFormat('yyyy-MM-dd')
+                                .format(examination.timeStart),
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            "${DateFormat('HH:mm').format(examination.timeStart)} - ${DateFormat('HH:mm').format(examination.timeEnd)}",
                             style: const TextStyle(fontSize: 18),
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            examinationProfile.diagnosis,
+                            examination.notes,
                             style: const TextStyle(
                                 fontSize: 18, overflow: TextOverflow.ellipsis),
                           ),
@@ -163,15 +168,27 @@ class _ExaminationProfileScreenState extends State<ExaminationProfileScreen> {
                             padding: const EdgeInsets.only(
                                 left: 10, right: 10, top: 5, bottom: 5),
                             decoration: BoxDecoration(
-                              color: examinationProfile.status == true
+                              color: examination.status == 1
                                   ? Colors.lightGreen
-                                  : Colors.red,
+                                  : examination.status == 2
+                                      ? Colors.red
+                                      : examination.status == 3
+                                          ? Colors.grey
+                                          : examination.status == 4
+                                              ? Colors.orange
+                                              : Colors.black,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              examinationProfile.status == true
-                                  ? "Active"
-                                  : "Inactive",
+                              examination.status == 1
+                                  ? "Completed"
+                                  : examination.status == 2
+                                      ? "Canceled"
+                                      : examination.status == 3
+                                          ? "Not yet"
+                                          : examination.status == 4
+                                              ? "Overdue"
+                                              : "Unknown",
                               style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w500),
                             ),

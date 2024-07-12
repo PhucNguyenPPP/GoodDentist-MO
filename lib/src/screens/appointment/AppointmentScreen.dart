@@ -66,11 +66,11 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const LoginScreen()),
-                (Route<dynamic> route) => false,
+            (Route<dynamic> route) => false,
           );
         } else {
           ApiResponseDTO<UserDTO> dentistInfo =
-          await DentistService.getDentistInformation(dentistId);
+              await DentistService.getDentistInformation(dentistId);
           setState(() {
             _dentistInfo = dentistInfo;
           });
@@ -82,6 +82,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         _errorMessage = "$e";
       });
     }
+    await Future.delayed(const Duration(milliseconds: 800));
     setState(() {
       _isLoading = false;
     });
@@ -100,15 +101,15 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const LoginScreen()),
-                (Route<dynamic> route) => false,
+            (Route<dynamic> route) => false,
           );
         } else {
           String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
           ApiResponseDTO<List<ExaminationDTO>> examinationList =
-          await ExaminationService.getExaminationListByDate(
-              _dentistInfo!.result!.clinics![0].clinicId,
-              dentistId,
-              formattedDate);
+              await ExaminationService.getExaminationListByDate(
+                  _dentistInfo!.result!.clinics![0].clinicId,
+                  dentistId,
+                  formattedDate);
           setState(() {
             _examinationList = examinationList;
           });
@@ -119,9 +120,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         _errorMessage = "$e";
       });
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
@@ -150,16 +148,27 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         child: _isLoading
             ? const CircularProgressIndicator()
             : _errorMessage != null
-            ? Text(
-          _errorMessage!,
-          style: const TextStyle(color: Colors.red),
-          textAlign: TextAlign.center,
-        )
-            : _examinationList != null &&
-            _examinationList!.result != null &&
-            _examinationList!.result!.isNotEmpty
-            ? _buildExaminationList(context)
-            : const Center(child: Text('No examination found')),
+                ? Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  )
+                : _examinationList != null &&
+                        _examinationList!.result != null &&
+                        _examinationList!.result!.isNotEmpty
+                    ? _buildExaminationList(context)
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 20),
+                          Image.asset(
+                            'assets/images/NoData.jpg', // Replace with your image path
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.contain,
+                          ),
+                        ],
+                      ),
       ),
     );
   }
@@ -176,7 +185,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AppointmentDetailLayout(examinationId: examination.examinationId,)),
+                      builder: (context) => AppointmentDetailLayout(
+                            examinationId: examination.examinationId,
+                          )),
                 );
               },
               child: Container(
@@ -207,8 +218,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                           Text(
                             examination.notes,
                             style: const TextStyle(
-                                fontSize: 18,
-                                overflow: TextOverflow.ellipsis),
+                                fontSize: 18, overflow: TextOverflow.ellipsis),
                           ),
                         ],
                       ),
@@ -227,22 +237,24 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                               color: examination.status == 1
                                   ? Colors.lightGreen
                                   : examination.status == 2
-                                  ? Colors.red
-                                  : examination.status == 3
-                                  ? Colors.grey
-                                  : examination.status == 4
-                                  ? Colors.orange : Colors.black,
-                                borderRadius: BorderRadius.circular(8),
+                                      ? Colors.red
+                                      : examination.status == 3
+                                          ? Colors.grey
+                                          : examination.status == 4
+                                              ? Colors.orange
+                                              : Colors.black,
+                              borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               examination.status == 1
                                   ? "Completed"
                                   : examination.status == 2
-                                  ? "Canceled"
-                                  : examination.status == 3
-                                  ? "Not yet"
-                                  : examination.status == 4
-                                  ? "Overdue" : "Unknown",
+                                      ? "Canceled"
+                                      : examination.status == 3
+                                          ? "Not yet"
+                                          : examination.status == 4
+                                              ? "Overdue"
+                                              : "Unknown",
                               style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w500),
                             ),
