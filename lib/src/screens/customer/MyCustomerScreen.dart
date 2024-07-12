@@ -46,14 +46,14 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const LoginScreen()),
-                (Route<dynamic> route) => false,
+            (Route<dynamic> route) => false,
           );
           return; // Exit early if expired
         }
       }
 
       ApiResponseDTO<List<UserDTO>>? customerList =
-      await CustomerService.getCustomerList(dentistId);
+          await CustomerService.getCustomerList(dentistId);
 
       setState(() {
         _customerList = customerList;
@@ -64,7 +64,6 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
           _errorMessage = "No customers found"; // Handle empty or null response
         });
       }
-
     } catch (e) {
       setState(() {
         _errorMessage = "Failed to load customers: $e";
@@ -89,14 +88,14 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const LoginScreen()),
-                (Route<dynamic> route) => false,
+            (Route<dynamic> route) => false,
           );
           return; // Exit early if expired
         }
       }
 
       ApiResponseDTO<List<UserDTO>>? customerList =
-      await CustomerService.searchCustomerList(dentistId, value);
+          await CustomerService.searchCustomerList(dentistId, value);
 
       setState(() {
         _customerList = customerList;
@@ -107,7 +106,6 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
           _errorMessage = "No customers found"; // Handle empty or null response
         });
       }
-
     } catch (e) {
       setState(() {
         _errorMessage = "Failed to load customers: $e";
@@ -160,14 +158,27 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
         child: _isLoading
             ? const CircularProgressIndicator()
             : _errorMessage != null
-            ? Text(
-          _errorMessage!,
-          style: const TextStyle(color: Colors.red),
-          textAlign: TextAlign.center,
-        )
-            : _customerList != null && _customerList!.result != null && _customerList!.result!.isNotEmpty
-            ? _buildCustomerList(context)
-            : const Center(child: Text('No customers found')),
+                ? Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  )
+                : _customerList != null &&
+                        _customerList!.result != null &&
+                        _customerList!.result!.isNotEmpty
+                    ? _buildCustomerList(context)
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 20),
+                          Image.asset(
+                            'assets/images/NoData.jpg', // Replace with your image path
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.contain,
+                          ),
+                        ],
+                      ),
       ),
     );
   }
@@ -185,7 +196,9 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CustomerDetailLayout(customerId: customer.userId!, customerName: customer.name),
+                    builder: (context) => CustomerDetailLayout(
+                        customerId: customer.userId!,
+                        customerName: customer.name),
                   ),
                 );
               },
@@ -204,10 +217,14 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
                       child: CachedNetworkImage(
                         imageUrl: customer.avatar ?? '',
                         height: 60,
-                        placeholder: (context, url) => const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) => Image.network(
-                          'https://th.bing.com/th/id/OIP.2AhD70xJ9FbrlEIpX_jrxgHaHa?rs=1&pid=ImgDetMain',
+                        width: 60,
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) => Image.asset(
+                          'assets/images/AvaDefault.jfif',
                           height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),

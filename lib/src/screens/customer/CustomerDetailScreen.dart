@@ -106,8 +106,8 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
                   imageUrl: _customer?.result?.avatar ?? '',
                   height: constraints.maxHeight * 0.2,
                   placeholder: (context, url) => const CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Image.network(
-                    'https://th.bing.com/th/id/OIP.2AhD70xJ9FbrlEIpX_jrxgHaHa?rs=1&pid=ImgDetMain',
+                  errorWidget: (context, url, error) => Image.asset(
+                    'assets/images/AvaDefault.jfif',
                     height: constraints.maxHeight * 0.2,
                   ),
                 ),
