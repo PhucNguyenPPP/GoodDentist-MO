@@ -176,7 +176,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const AppointmentDetailLayout()),
+                      builder: (context) => AppointmentDetailLayout(examinationId: examination.examinationId,)),
                 );
               },
               child: Container(
@@ -205,7 +205,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            "${examination.notes}",
+                            examination.notes,
                             style: const TextStyle(
                                 fontSize: 18,
                                 overflow: TextOverflow.ellipsis),

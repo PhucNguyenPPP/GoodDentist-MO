@@ -99,7 +99,7 @@ class _ExaminationProfileScreenState extends State<ExaminationProfileScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const AppointmentDetailLayout()),
+                      builder: (context) => AppointmentDetailLayout(examinationId: 1,)),
                 );
               },
               child: Container(
