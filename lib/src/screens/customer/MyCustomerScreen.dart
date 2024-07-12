@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_dentist_mobile/src/api/customer/CustomerService.dart';
 import 'package:good_dentist_mobile/src/models/ApiResponseDTO.dart';
@@ -20,6 +24,8 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
   String? _errorMessage;
   ApiResponseDTO<List<UserDTO>>? _customerList;
   String? role;
+  final TextEditingController _searchValue = TextEditingController();
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -70,6 +76,56 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
     }
   }
 
+  Future<void> _fetchSearchCustomerList(String value) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? dentistId = prefs.getString('dentistId');
+      int? expiration = prefs.getInt('expiration');
+      role = prefs.getString('role');
+
+      if (dentistId != null && expiration != null && role != null) {
+        if (DateTime.now().millisecondsSinceEpoch > expiration) {
+          // If expired, navigate to login page
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+                (Route<dynamic> route) => false,
+          );
+          return; // Exit early if expired
+        }
+      }
+
+      ApiResponseDTO<List<UserDTO>>? customerList =
+      await CustomerService.searchCustomerList(dentistId, value);
+
+      setState(() {
+        _customerList = customerList;
+      });
+
+      if (_customerList == null || _customerList!.result == null) {
+        setState(() {
+          _errorMessage = "No customers found"; // Handle empty or null response
+        });
+      }
+
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Failed to load customers: $e";
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _onSearchChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _fetchSearchCustomerList(value);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,6 +136,8 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
               child: SizedBox(
                 height: AppBar().preferredSize.height * 0.7,
                 child: TextField(
+                  controller: _searchValue,
+                  onChanged: _onSearchChanged,
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
                     hintText: "Search by name, id, phone",
@@ -127,7 +185,7 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CustomerDetailLayout(),
+                    builder: (context) => CustomerDetailLayout(customerId: customer.userId!, customerName: customer.name),
                   ),
                 );
               },
@@ -143,14 +201,19 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(100),
-                      child: Image.network(
-                        'https://th.bing.com/th/id/OIP.2AhD70xJ9FbrlEIpX_jrxgHaHa?rs=1&pid=ImgDetMain',
-                        height: 30,
+                      child: CachedNetworkImage(
+                        imageUrl: customer.avatar ?? '',
+                        height: 60,
+                        placeholder: (context, url) => const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) => Image.network(
+                          'https://th.bing.com/th/id/OIP.2AhD70xJ9FbrlEIpX_jrxgHaHa?rs=1&pid=ImgDetMain',
+                          height: 60,
+                        ),
                       ),
                     ),
                     SizedBox(width: constraints.maxWidth * 0.1),
                     SizedBox(
-                      width: constraints.maxWidth * 0.6,
+                      width: constraints.maxWidth * 0.5,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,

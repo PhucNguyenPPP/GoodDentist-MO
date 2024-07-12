@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:good_dentist_mobile/src/api/dentist/DentistService.dart';
 import 'package:good_dentist_mobile/src/models/ApiResponseDTO.dart';
@@ -103,9 +104,14 @@ class _ProfileInformationScreenState extends State<ProfileInformationScreen> {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: Image.network(
-                    _dentistInfo!.result!.avatar!,
+                  child: CachedNetworkImage(
+                    imageUrl: _dentistInfo?.result?.avatar ?? '',
                     height: constraints.maxHeight * 0.08,
+                    placeholder: (context, url) => const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Image.network(
+                      'https://th.bing.com/th/id/OIP.2AhD70xJ9FbrlEIpX_jrxgHaHa?rs=1&pid=ImgDetMain',
+                      height: constraints.maxHeight * 0.08,
+                    ),
                   ),
                 ),
                 SizedBox(width: constraints.maxWidth * 0.05),
