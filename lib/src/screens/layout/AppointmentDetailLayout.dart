@@ -90,7 +90,7 @@ class AppointmentDetailLayoutState extends State<AppointmentDetailLayout>
 
     return DefaultTabController(
       length: 5,
-      child: Scaffold(
+     child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.purple[400],
           title: Text(_examDetail?.result?.customerName ?? 'Loading...'),
@@ -104,7 +104,7 @@ class AppointmentDetailLayoutState extends State<AppointmentDetailLayout>
                 tabAlignment: TabAlignment.center,
                 tabs: const <Widget>[
                   Tab(text: 'Information'),
-                  Tab(text: 'Examination Profile'),
+                  Tab(text: ' Examination Profile'),
                   Tab(text: 'Order'),
                   Tab(text: 'Prescription'),
                   Tab(text: 'Medical Record'),

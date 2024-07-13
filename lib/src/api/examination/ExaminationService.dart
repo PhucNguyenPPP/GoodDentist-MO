@@ -10,7 +10,7 @@ class ExaminationService {
 
   static Future<ApiResponseDTO<List<ExaminationDTO>>> getExaminationListByDate(String clinicId, String dentistId, String date) async {
     final String baseUrl = ApiConfig.getBaseUrl();
-    final url = Uri.parse('$baseUrl/clinic/user?clinicId=$clinicId&userId=$dentistId&selectedDate=$date&actor=dentist&pageNumber=1&rowsPerPage=1000&sortOrder=asc');
+    final url = Uri.parse('$baseUrl/api/examinations/clinic/user?clinicId=$clinicId&userId=$dentistId&selectedDate=$date&actor=dentist&pageNumber=1&rowsPerPage=1000&sortOrder=asc');
     final response = await http.get(
         url,
         headers: <String, String>{
@@ -50,7 +50,7 @@ class ExaminationService {
 
   static Future<ApiResponseDTO<ExaminationDetailDTO>> getExaminationDetail(int examinationId) async {
     final String baseUrl = ApiConfig.getBaseUrl();
-    final url = Uri.parse('$baseUrl/api/examinations/examination-detail?examId=$examinationId');
+    final url = Uri.parse('$baseUrl/api/examinations/examination/detail?examId=$examinationId');
     final response = await http.get(
         url,
         headers: <String, String>{

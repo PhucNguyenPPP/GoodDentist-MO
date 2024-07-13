@@ -101,7 +101,7 @@ class CustomerService {
     }
 
     final String baseUrl = ApiConfig.getBaseUrl();
-    final url = Uri.parse('$baseUrl/customers/$customerId');
+    final url = Uri.parse('$baseUrl/customers/customer/$customerId');
     final response = await http.get(
       url,
       headers: <String, String>{
