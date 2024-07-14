@@ -101,7 +101,7 @@ class LoginWidgetState extends State<LoginWidget> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
-              const Text('User name', style: TextStyle(fontSize: 20)),
+              const Text('Username', style: TextStyle(fontSize: 20)),
               const SizedBox(height: 10),
               TextField(
                 controller: _usernameController,
