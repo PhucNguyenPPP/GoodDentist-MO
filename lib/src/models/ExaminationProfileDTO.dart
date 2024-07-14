@@ -30,7 +30,7 @@ class ExaminationProfileDTO {
       diagnosis: json['diagnosis'],
       status: json['status'],
       customer: UserDTO.fromJson(json['customer']),
-      dentist: UserDTO.fromJson(json['dentist']),
+      dentist:  UserDTO.fromJson(json['dentist']),
     );
   }
 }

@@ -197,7 +197,7 @@ class _MyCustomerScreenState extends State<MyCustomerScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => CustomerDetailLayout(
-                        customerId: customer.userId!,
+                        customerId: customer.customerId!,
                         customerName: customer.name),
                   ),
                 );

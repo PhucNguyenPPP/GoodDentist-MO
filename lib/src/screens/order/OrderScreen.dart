@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_dentist_mobile/src/models/ApiResponseDTO.dart';
 import 'package:good_dentist_mobile/src/models/ExaminationDetailDTO.dart';
+import 'package:good_dentist_mobile/src/screens/order/OrderDetailScreen.dart';
 import 'package:intl/intl.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -51,7 +52,12 @@ class OrderScreenState extends State<OrderScreen> {
           final order = widget.examDetail!.result!.orders[index];
           return InkWell(
             onTap: () {
-              // Handle onTap action here
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OrderDetailScreen(orderId: order.orderId),
+                ),
+              );
             },
             child: Container(
               height: 90,
