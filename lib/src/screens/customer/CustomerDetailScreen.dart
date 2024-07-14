@@ -262,6 +262,27 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
             ],
           ),
           SizedBox(height: constraints.maxHeight * 0.02),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(width: constraints.maxWidth * 0.05),
+              SizedBox(
+                  width: constraints.maxWidth * 0.3,
+                  child: const Text(
+                    "Anamnesis:",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  )),
+              SizedBox(width: constraints.maxWidth * 0.1),
+              SizedBox(
+
+                  width: constraints.maxWidth * 0.5,
+                  child: Text(
+                    _customer!.result!.anamnesis.toString(),
+                    style: const TextStyle(fontSize: 18),
+                  )),
+            ],
+          ),
+          SizedBox(height: constraints.maxHeight * 0.02),
           Container(
             height: constraints.maxHeight * 0.01,
             color: Colors.grey[300],

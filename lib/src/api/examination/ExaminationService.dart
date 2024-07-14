@@ -2,21 +2,21 @@ import 'dart:convert';
 
 import 'package:good_dentist_mobile/src/api/ApiConfig.dart';
 import 'package:good_dentist_mobile/src/models/ApiResponseDTO.dart';
+import 'package:good_dentist_mobile/src/models/ExaminationCreateResponseDTO.dart';
+import 'package:good_dentist_mobile/src/models/ExaminationCreateResquestDTO.dart';
 import 'package:good_dentist_mobile/src/models/ExaminationDTO.dart';
 import 'package:good_dentist_mobile/src/models/ExaminationDetailDTO.dart';
 import 'package:http/http.dart' as http;
 
 class ExaminationService {
-
-  static Future<ApiResponseDTO<List<ExaminationDTO>>> getExaminationListByDate(String clinicId, String dentistId, String date) async {
+  static Future<ApiResponseDTO<List<ExaminationDTO>>> getExaminationListByDate(
+      String clinicId, String dentistId, String date) async {
     final String baseUrl = ApiConfig.getBaseUrl();
-    final url = Uri.parse('$baseUrl/clinic/user?clinicId=$clinicId&userId=$dentistId&selectedDate=$date&actor=dentist&pageNumber=1&rowsPerPage=1000&sortOrder=asc');
-    final response = await http.get(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        }
-    );
+    final url = Uri.parse(
+        '$baseUrl/api/examinations/clinic/user?clinicId=$clinicId&userId=$dentistId&selectedDate=$date&actor=dentist&pageNumber=1&rowsPerPage=1000&sortOrder=asc');
+    final response = await http.get(url, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
 
@@ -48,33 +48,33 @@ class ExaminationService {
     }
   }
 
-  static Future<ApiResponseDTO<ExaminationDetailDTO>> getExaminationDetail(int examinationId) async {
+  static Future<ApiResponseDTO<ExaminationDetailDTO>> getExaminationDetail(
+      int examinationId) async {
     final String baseUrl = ApiConfig.getBaseUrl();
-    final url = Uri.parse('$baseUrl/api/examinations/examination-detail?examId=$examinationId');
-    final response = await http.get(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        }
-    );
+    final url = Uri.parse(
+        '$baseUrl/api/examinations/examination/detail?examId=$examinationId');
+    final response = await http.get(url, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-      return ApiResponseDTO<ExaminationDetailDTO>.fromJson(jsonResponse, (json) => ExaminationDetailDTO.fromJson(json));
+      return ApiResponseDTO<ExaminationDetailDTO>.fromJson(
+          jsonResponse, (json) => ExaminationDetailDTO.fromJson(json));
     } else {
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
-      return ApiResponseDTO<ExaminationDetailDTO>.fromJson(jsonResponse, (json) => ExaminationDetailDTO.fromJson(json));
+      return ApiResponseDTO<ExaminationDetailDTO>.fromJson(
+          jsonResponse, (json) => ExaminationDetailDTO.fromJson(json));
     }
   }
 
-  static Future<ApiResponseDTO<List<ExaminationDTO>>> getExaminationListByExaminationProfileId(int examProfileId) async {
+  static Future<ApiResponseDTO<List<ExaminationDTO>>>
+      getExaminationListByExaminationProfileId(int examProfileId) async {
     final String baseUrl = ApiConfig.getBaseUrl();
-    final url = Uri.parse('$baseUrl/clinic/profile?profileId=$examProfileId&pageNumber=1&rowsPerPage=1000&sortOrder=asc');
-    final response = await http.get(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        }
-    );
+    final url = Uri.parse(
+        '$baseUrl/api/examinations/profile?profileId=$examProfileId&pageNumber=1&rowsPerPage=1000&sortOrder=asc');
+    final response = await http.get(url, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
 
@@ -104,5 +104,21 @@ class ExaminationService {
         result: [],
       );
     }
+  }
+
+  static Future<ExaminationCreateResponseDTO> createNewExamination(
+      String mode, String customerId, ExaminationCreateRequestDTO requestDTO) async {
+    final String baseUrl = ApiConfig.getBaseUrl();
+    final url = Uri.parse(
+        '$baseUrl/api/examinations/examination?mode=$mode&customerId=$customerId');
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(requestDTO.toJson()),
+    );
+    final jsonResponse = jsonDecode(response.body);
+    return ExaminationCreateResponseDTO.fromJson(jsonResponse);
   }
 }

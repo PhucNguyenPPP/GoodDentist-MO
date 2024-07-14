@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_dentist_mobile/src/models/ApiResponseDTO.dart';
 import 'package:good_dentist_mobile/src/models/ExaminationDetailDTO.dart';
+import 'package:good_dentist_mobile/src/screens/prescription/PrescriptionDetailScreen.dart';
 import 'package:intl/intl.dart';
 
 class PrescriptionScreen extends StatefulWidget {
@@ -51,7 +52,12 @@ class PrescriptionScreenState extends State<PrescriptionScreen> {
           final prescription = widget.examDetail!.result!.prescriptions[index];
           return InkWell(
             onTap: () {
-              // Handle onTap action here
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PrescriptionDetailScreen(prescriptionId: prescription.prescriptionId,),
+                ),
+              );
             },
             child: Container(
               height: 90,
