@@ -179,7 +179,7 @@ class _ProfileInformationScreenState extends State<ProfileInformationScreen> {
               SizedBox(
                 width: constraints.maxWidth * 0.5,
                 child: Text(
-                  _dentistInfo!.result!.userName,
+                  _dentistInfo!.result!.userName!,
                   style: const TextStyle(fontSize: 18),
                 ),
               ),
