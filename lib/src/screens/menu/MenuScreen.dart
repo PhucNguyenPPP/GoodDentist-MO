@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:good_dentist_mobile/src/screens/menu/ClinicInformationScreen.dart';
 import 'package:good_dentist_mobile/src/screens/common/LoginScreen.dart';
 import 'package:good_dentist_mobile/src/screens/menu/ProfileInformationScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -13,6 +14,17 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
+
+  Future<void> _signOut(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+          (Route<dynamic> route) => false,
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,14 +114,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
-                          (Route<dynamic> route) => false,
-                    );
-                  },
+                  onTap:() => _signOut(context),
                   child: Container(
                       height: 70,
                       alignment: Alignment.center,

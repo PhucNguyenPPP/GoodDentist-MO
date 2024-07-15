@@ -4,7 +4,7 @@ import 'package:good_dentist_mobile/src/models/ExaminationProfileDTO.dart';
 class UserDTO {
   final String? userId;
   final String? customerId;
-  final String userName;
+  final String? userName;
   final String name;
   final String dob;
   final String gender;
@@ -44,7 +44,7 @@ class UserDTO {
     return UserDTO(
       userId: json['userId'] ?? "",
       customerId: json['customerId'] ?? "",
-      userName: json['userName'],
+      userName: json['userName'] ?? "",
       name: json['name'],
       dob: json['dob'],
       gender: json['gender'],
@@ -54,7 +54,7 @@ class UserDTO {
       address: json['address'],
       anamnesis: json['anamnesis'] ?? "",
       status: json['status'],
-      roleId: json['roleId'],
+      roleId: json['roleId'] ?? 0,
       avatar: json['avatar'],
       clinics: clinicsList != null
           ? clinicsList

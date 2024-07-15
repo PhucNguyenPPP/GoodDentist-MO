@@ -60,7 +60,6 @@ class PrescriptionScreenState extends State<PrescriptionScreen> {
               );
             },
             child: Container(
-              height: 90,
               margin: const EdgeInsets.symmetric(horizontal: 15),
               decoration: const BoxDecoration(
                 border: Border(
