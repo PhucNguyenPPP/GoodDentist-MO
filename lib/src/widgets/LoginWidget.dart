@@ -45,7 +45,7 @@ class LoginWidgetState extends State<LoginWidget> {
 
         // Lấy role từ claim
         final role = payload[
-            'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+        'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
         // Lấy dentistId từ claim
         final dentistId = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
 
@@ -61,7 +61,7 @@ class LoginWidgetState extends State<LoginWidget> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const MainLayoutScreen()),
-            (Route<dynamic> route) => false,
+                (Route<dynamic> route) => false,
           );
         } else {
           setState(() {
@@ -86,83 +86,107 @@ class LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 30),
-              const Text(
-                'Sign In',
-                style: TextStyle(fontSize: 30),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 30),
-              const Text('Username', style: TextStyle(fontSize: 20)),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _usernameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Enter a user name",
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text('Password', style: TextStyle(fontSize: 20)),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _passwordController,
-                obscureText: passwordVisible,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  hintText: "Enter password",
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      passwordVisible ? Icons.visibility : Icons.visibility_off,
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 30),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.business,
+                          color: Colors.purple,
+                          size: 50.0,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          'Good Dentist',
+                          style: TextStyle(
+                            fontSize: 40,
+                            color: Colors.purple,
+                            fontWeight: FontWeight.bold
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      setState(() {
-                        passwordVisible = !passwordVisible;
-                      });
-                    },
-                  ),
+                    const SizedBox(height: 50),
+                    const Text('Username', style: TextStyle(fontSize: 20)),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _usernameController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Enter a user name",
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text('Password', style: TextStyle(fontSize: 20)),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _passwordController,
+                      obscureText: passwordVisible,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        hintText: "Enter password",
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              passwordVisible = !passwordVisible;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                    if (_errorMessage != null) ...[
+                      Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                    ElevatedButton(
+                      onPressed: _login,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.only(top: 20, bottom: 20),
+                        backgroundColor: Colors.purple[300],
+                        foregroundColor: Colors.black,
+                      ),
+                      child: const Text('Sign In',
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold)),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 30),
-              if (_errorMessage != null) ...[
-                Text(
-                  _errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-              ],
-              ElevatedButton(
-                onPressed: _login,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple[300],
-                  foregroundColor: Colors.black,
-                ),
-                child: const Text('Sign In',
-                    style:
-                        TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            ),
+            if (_isLoading) ...[
+              const Opacity(
+                opacity: 0.8,
+                child: ModalBarrier(dismissible: false, color: Colors.black),
+              ),
+              const Center(
+                child: CircularProgressIndicator(),
               ),
             ],
-          ),
+          ],
         ),
-        if (_isLoading) ...[
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-        ],
-      ],
+      ),
     );
   }
 }
