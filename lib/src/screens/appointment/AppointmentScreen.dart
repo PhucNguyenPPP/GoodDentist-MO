@@ -196,7 +196,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       }
 
       ApiResponseDTO<List<UserDTO>>? customerList =
-          await CustomerService.searchAllCustomerListInClinic(_dentistInfo!.result!.clinics![0].clinicId, value);
+          await CustomerService.searchAllCustomerListInClinic(
+              _dentistInfo!.result!.clinics![0].clinicId, value);
 
       setState(() {
         _customerList = customerList;
@@ -495,26 +496,34 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                 left: 10, right: 10, top: 5, bottom: 5),
                             decoration: BoxDecoration(
                               color: examination.status == 1
-                                  ? Colors.lightGreen
+                                  ? Colors.grey
                                   : examination.status == 2
-                                      ? Colors.red
+                                      ? Colors.greenAccent
                                       : examination.status == 3
-                                          ? Colors.grey
+                                          ? Colors.blue
                                           : examination.status == 4
-                                              ? Colors.orange
-                                              : Colors.black,
+                                              ? Colors.lightGreen
+                                              : examination.status == 5
+                                                  ? Colors.red
+                                                  : examination.status == 6
+                                                      ? Colors.orange
+                                                      : Colors.yellow,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               examination.status == 1
-                                  ? "Completed"
+                                  ? "Not yet"
                                   : examination.status == 2
-                                      ? "Canceled"
+                                      ? "Arrived"
                                       : examination.status == 3
-                                          ? "Not yet"
+                                          ? "In treatment"
                                           : examination.status == 4
-                                              ? "Overdue"
-                                              : "Unknown",
+                                              ? "Completed"
+                                              : examination.status == 5
+                                                  ? "Canceled"
+                                                  : examination.status == 6
+                                                      ? "Rescheduled"
+                                                      : "Unknown",
                               style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w500),
                             ),

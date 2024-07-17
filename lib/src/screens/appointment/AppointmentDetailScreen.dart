@@ -112,13 +112,17 @@ class AppointmentDetailScreenState extends State<AppointmentDetailScreen> {
                         width: constraints.maxWidth * 0.5,
                         child: Text(
                           widget.examDetail!.result!.status == 1
-                              ? "Completed"
-                              : widget.examDetail!.result!.status == 2
-                              ? "Canceled"
-                              : widget.examDetail!.result!.status == 3
                               ? "Not yet"
+                              : widget.examDetail!.result!.status == 2
+                              ? "Arrived"
+                              : widget.examDetail!.result!.status == 3
+                              ? "In treatment"
                               : widget.examDetail!.result!.status == 4
-                              ? "Overdue"
+                              ? "Completed"
+                              : widget.examDetail!.result!.status == 5
+                              ? "Canceled"
+                              : widget.examDetail!.result!.status == 6
+                              ? "Rescheduled"
                               : "Unknown",
                           style: const TextStyle(fontSize: 18),
                         )),
